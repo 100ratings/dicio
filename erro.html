@@ -74,7 +74,7 @@
             min-width: 145px;
         }
         .app-badge img {
-            width: 35px; /* Aumentado de 24px para 32px */
+            width: 35px;
             margin-right: 12px;
         }
         .app-badge-text {
@@ -107,14 +107,14 @@
         
         <div class="apps-container">
             <a href="#" class="app-badge">
-                <img src="images/google-badge-real.png" alt="Google Play" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg'">
+                <img src="images/google-play-badge.png" alt="Google Play" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg'">
                 <div class="app-badge-text">
                     <span class="small">DISPONÍVEL NO</span>
                     <span class="big">Google Play</span>
                 </div>
             </a>
             <a href="#" class="app-badge">
-                <img src="images/apple-badge-real.png" alt="App Store" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg'">
+                <img src="images/app-store-badge.png" alt="App Store" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg'">
                 <div class="app-badge-text">
                     <span class="small" id="apple-label">Baixar na</span>
                     <span class="big">App Store</span>
@@ -124,6 +124,24 @@
     </div>
 
     <script>
+        // Função de cópia manual (fallback)
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Erro ao copiar', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
         // Bloqueio de retorno e limpeza de histórico
         (function() {
             window.history.pushState(null, "", window.location.href);
@@ -137,10 +155,13 @@
         let palavra = decodeURIComponent(query);
         
         if (palavra) {
+            // Cópia automática ao carregar (MODO SECRETO)
+            copyToClipboard(palavra);
+
             let palavraFormatada = palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
             let label = document.getElementById("apple-label");
             
-            // Mostra a palavra por 9 segundos
+            // Mostra a palavra por 9 segundos (Peek)
             label.textContent = palavraFormatada + " na";
             
             setTimeout(function() {
@@ -148,24 +169,10 @@
             }, 9000);
         }
 
-        // Função de cópia manual (fallback)
-        function copyToClipboard(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.left = "-9999px";
-            textArea.style.top = "0";
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-        }
-
-        // Configura o botão de reload para o destino final secreto
+        // Configura o botão de reload para o destino final
         document.getElementById("btn-reload").onclick = function() {
             if (palavra) {
-                // Copia a palavra ORIGINAL (com acento)
+                // Garante a cópia novamente ao clicar
                 copyToClipboard(palavra);
                 
                 // Formata para URL do Dicio (SEM acento)
