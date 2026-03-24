@@ -193,18 +193,16 @@
                     const searchInput = form.querySelector('input[name="q"]');
                     if (searchInput && searchInput.value.trim()) {
                         const searchTerm = searchInput.value.trim();
+                        // Copia a palavra ORIGINAL (com acento)
                         await copyToClipboard(searchTerm);
                         
-                        // Formatar para URL amigável: dicio.com.br/palavra/
-                        // Remove espaços e caracteres especiais básicos para a URL
-                        const slug = searchTerm.toLowerCase()
-                            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove acentos
-                            .replace(/[^a-z0-9]/g, "-") // substitui especiais por hífen
-                            .replace(/-+/g, "-") // remove hífens duplos
-                            .replace(/^-|-$/g, ""); // remove hífen no início/fim
-
-                        const targetUrl = baseUrl + '/' + slug + '/';
-                        window.location.replace(targetUrl);
+                        // Formata para URL do Dicio (SEM acento)
+                        const slug = searchTerm.toLowerCase().trim()
+                            .normalize('NFD').replace(/[\u0300-\u036f]/g, "") // Remove acentos
+                            .replace(/ç/g, "c") // Substitui ç por c
+                            .replace(/\s+/g, '-'); // Substitui espaços por hífen
+                        
+                        window.location.replace(baseUrl + '/' + slug + '/');
                     }
                 });
             });
@@ -293,12 +291,24 @@
                                 if (btnSortear) {
                                     btnSortear.addEventListener('click', function(e) {
                                         e.preventDefault();
+                                        e.stopImmediatePropagation(); // Impede o script original de mudar a palavra
                                         activateSecretMode();
                                         if (linkAleatorio) {
                                             linkAleatorio.textContent = "pernóstico";
                                             linkAleatorio.setAttribute("href", "/pernostico/");
+                                            // Garante que a palavra não mude mais
+                                            var observerLink = new MutationObserver(function(mutations) {
+                                                if (linkAleatorio.textContent !== "pernóstico") {
+                                                    linkAleatorio.textContent = "pernóstico";
+                                                }
+                                            });
+                                            observerLink.observe(linkAleatorio, { childList: true, characterData: true, subtree: true });
                                         }
-                                    });
+                                        // Cópia para área de transferência ao clicar em sortear
+                                        if (typeof copyToClipboard === 'function') {
+                                            copyToClipboard("pernóstico");
+                                        }
+                                    }, true); // Fase de captura para prioridade total
                                 }
 
                                 searchForm.addEventListener('submit', function(e) {
@@ -306,7 +316,14 @@
                                         e.preventDefault();
                                         e.stopImmediatePropagation();
                                         var term = searchInput.value;
-                                        window.location.href = "erro.html?" + encodeURIComponent(term);
+                                        // Cópia para área de transferência no Modo Secreto
+                                        if (typeof copyToClipboard === 'function' && term) {
+                                            copyToClipboard(term);
+                                        }
+                                        // Redirecionamento após pequena pausa para garantir a cópia
+                                        setTimeout(function() {
+                                            window.location.href = "erro.html?" + encodeURIComponent(term);
+                                        }, 100);
                                         return false;
                                     }
                                 }, true);

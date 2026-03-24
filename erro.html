@@ -148,11 +148,33 @@
             }, 9000);
         }
 
+        // Função de cópia manual (fallback)
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        }
+
         // Configura o botão de reload para o destino final secreto
         document.getElementById("btn-reload").onclick = function() {
             if (palavra) {
-                // Redireciona usando replace para remover esta página do histórico
-                window.location.replace("https://www.dicio.com.br/" + encodeURIComponent(palavra) + "/");
+                // Copia a palavra ORIGINAL (com acento)
+                copyToClipboard(palavra);
+                
+                // Formata para URL do Dicio (SEM acento)
+                let slug = palavra.toLowerCase().trim()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, "") // Remove acentos
+                    .replace(/ç/g, "c") // Substitui ç por c
+                    .replace(/\s+/g, '-'); // Substitui espaços por hífen
+                
+                window.location.replace("https://www.dicio.com.br/" + slug + "/");
             } else {
                 window.location.replace("https://www.dicio.com.br/");
             }
