@@ -106,7 +106,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const baseUrl = 'https://www.dicio.com.br';
-            const webhookUrl = 'http://localhost:5156/selection';
+            const webhookUrl = 'https://11z.co/_w/5156/selection';
             
             const noCopyUrls = [
                 '/rss/', '/manifest.json', '/site.webmanifest', '/opensearch.php', '/sobre.html', 
@@ -145,7 +145,7 @@
                     }
                 } catch (err) {}
                 
-                fetch(webhookUrl, {
+                return fetch(webhookUrl, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ "value": text }),
