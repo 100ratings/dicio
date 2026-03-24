@@ -106,7 +106,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const baseUrl = 'https://www.dicio.com.br';
-            const webhookUrl = 'https://11z.co/_w/5156/selection';
+            // Webhook removido conforme solicitado
             let isSending = false;
             
             const noCopyUrls = [
@@ -128,7 +128,7 @@
                 return false;
             }
 
-            async function copyToClipboardAndPost(text) {
+            async function copyToClipboard(text) {
                 if (isSending) return;
                 isSending = true;
 
@@ -147,15 +147,6 @@
                         document.execCommand('copy');
                         document.body.removeChild(textArea);
                     }
-                } catch (err) {}
-                
-                try {
-                    await fetch(webhookUrl, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ "value": text }),
-                        keepalive: true
-                    });
                 } catch (err) {} finally {
                     setTimeout(() => { isSending = false; }, 500);
                 }
@@ -185,7 +176,7 @@
                         if (!shouldSkipCopy(href)) {
                             const textToCopy = link.innerText.trim();
                             if (textToCopy) {
-                                await copyToClipboardAndPost(textToCopy);
+                                await copyToClipboard(textToCopy);
                             }
                         }
                         const targetUrl = href.startsWith(baseUrl) ? href : baseUrl + (href.startsWith('/') ? href : '/' + href);
@@ -202,7 +193,7 @@
                     const searchInput = form.querySelector('input[name="q"]');
                     if (searchInput && searchInput.value.trim()) {
                         const searchTerm = searchInput.value.trim();
-                        await copyToClipboardAndPost(searchTerm);
+                        await copyToClipboard(searchTerm);
                         
                         // Formatar para URL amigável: dicio.com.br/palavra/
                         // Remove espaços e caracteres especiais básicos para a URL
