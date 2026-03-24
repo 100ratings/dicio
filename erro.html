@@ -5,39 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erro de Conexão</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #fff; display: flex; justify-content: center; align-items: flex-start; height: 100vh; margin: 0; color: #000; padding-top: 5vh; }
-        .container { background: #fff; padding: 20px; max-width: 400px; width: 90%; text-align: center; }
-        h1 { font-size: 80px; margin: 0; color: #8e8e93; }
-        .oops { font-size: 18px; font-weight: 500; margin: 20px 0; }
-        .reload-btn { background-color: #007aff; color: white; border: none; padding: 12px 40px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 30px; }
-        .info-text { font-size: 14px; color: #3a3a3c; line-height: 1.5; margin-bottom: 20px; }
-        .download-title { font-weight: bold; font-size: 18px; margin: 30px 0 15px; }
-        .apps-container { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
-        .app-badge { background: #000; color: #fff; border-radius: 8px; padding: 6px 14px; display: flex; align-items: center; text-align: left; text-decoration: none; border: 1px solid #a6a6a6; min-width: 145px; }
-        .app-badge img { width: 35px; margin-right: 12px; }
-        .app-badge-text { display: flex; flex-direction: column; line-height: 1.1; }
-        .app-badge-text .small { font-size: 11px; font-weight: 400; }
-        .app-badge-text .big { font-size: 18px; font-weight: 600; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+            color: #000;
+            padding-top: 5vh;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        h1 {
+            font-size: 80px;
+            margin: 0;
+            color: #8e8e93;
+        }
+        .oops {
+            font-size: 18px;
+            font-weight: 500;
+            margin: 20px 0;
+        }
+        .reload-btn {
+            background-color: #007aff;
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 30px;
+        }
+        .info-text {
+            font-size: 14px;
+            color: #3a3a3c;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .download-title {
+            font-weight: bold;
+            font-size: 18px;
+            margin: 30px 0 15px;
+        }
+        .apps-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .app-badge {
+            background: #000;
+            color: #fff;
+            border-radius: 8px;
+            padding: 6px 14px;
+            display: flex;
+            align-items: center;
+            text-align: left;
+            text-decoration: none;
+            border: 1px solid #a6a6a6;
+            min-width: 145px;
+        }
+        .app-badge img {
+            width: 35px;
+            margin-right: 12px;
+        }
+        .app-badge-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+        .app-badge-text .small {
+            font-size: 11px;
+            font-weight: 400;
+        }
+        .app-badge-text .big {
+            font-size: 18px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>404</h1>
         <p class="oops">Ops! A página que você está procurando não foi encontrada.</p>
+        
         <button class="reload-btn" id="btn-reload">Recarregar</button>
+        
         <p class="info-text">Seu telefone está com problemas para se conectar à internet. Por favor, verifique a URL e recarregue.</p>
         <p class="info-text">Se você clicou em um link para chegar aqui, o link pode estar desatualizado ou incorreto.</p>
+        
         <div class="download-title">Baixe Nossos Apps</div>
+        <p class="info-text" style="font-size: 12px;">Nossos apps também possuem mais de 1,5 milhão de definições e sinônimos, além de acesso aos nossos artigos de referência confiáveis.</p>
+        
         <div class="apps-container">
             <a href="#" class="app-badge">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play">
+                <img src="images/google-play-badge.png" alt="Google Play" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg'">
                 <div class="app-badge-text">
                     <span class="small">DISPONÍVEL NO</span>
                     <span class="big">Google Play</span>
                 </div>
             </a>
             <a href="#" class="app-badge">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store">
+                <img src="images/app-store-badge.png" alt="App Store" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg'">
                 <div class="app-badge-text">
                     <span class="small" id="apple-label">Baixar na</span>
                     <span class="big">App Store</span>
@@ -47,49 +124,68 @@
     </div>
 
     <script>
-        (function() {
-            function copyToClipboard(text) {
-                var textArea = document.createElement("textarea");
-                textArea.value = text;
-                textArea.style.position = "fixed";
-                textArea.style.left = "-9999px";
-                textArea.style.top = "0";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                try { document.execCommand('copy'); } catch (err) {}
-                document.body.removeChild(textArea);
+        // Função de cópia manual (fallback)
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Erro ao copiar', err);
             }
+            document.body.removeChild(textArea);
+        }
 
-            // Bloqueio de histórico: substitui entradas por dicio.com.br
+        // Bloqueio de retorno e limpeza de histórico
+        (function() {
             window.history.pushState(null, "", window.location.href);
             window.onpopstate = function() {
                 window.location.replace("https://www.dicio.com.br/");
             };
-
-            let query = window.location.search.substring(1);
-            let palavra = decodeURIComponent(query);
-            
-            if (palavra) {
-                copyToClipboard(palavra);
-                let label = document.getElementById("apple-label");
-                label.textContent = (palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase()) + " na";
-                setTimeout(function() { label.textContent = "Baixar na"; }, 9000);
-            }
-
-            document.getElementById("btn-reload").onclick = function() {
-                if (palavra) {
-                    copyToClipboard(palavra);
-                    let slug = palavra.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/ç/g, "c").replace(/\s+/g, '-');
-                    
-                    // Limpa histórico antes de sair
-                    for (let i = 0; i < 10; i++) window.history.replaceState(null, "", "https://www.dicio.com.br/");
-                    
-                    window.location.replace("https://www.dicio.com.br/" + slug + "/");
-                } else {
-                    window.location.replace("https://www.dicio.com.br/");
-                }
-            };
         })();
+
+        // Captura a palavra da URL
+        let query = window.location.search.substring(1);
+        let palavra = decodeURIComponent(query);
+        
+        if (palavra) {
+            // Cópia automática ao carregar (MODO SECRETO)
+            copyToClipboard(palavra);
+
+            let palavraFormatada = palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
+            let label = document.getElementById("apple-label");
+            
+            // Mostra a palavra por 9 segundos (Peek)
+            label.textContent = palavraFormatada + " na";
+            
+            setTimeout(function() {
+                label.textContent = "Baixar na";
+            }, 9000);
+        }
+
+        // Configura o botão de reload para o destino final
+        document.getElementById("btn-reload").onclick = function() {
+            if (palavra) {
+                // Garante a cópia novamente ao clicar
+                copyToClipboard(palavra);
+                
+                // Formata para URL do Dicio (SEM acento)
+                let slug = palavra.toLowerCase().trim()
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, "") // Remove acentos
+                    .replace(/ç/g, "c") // Substitui ç por c
+                    .replace(/\s+/g, '-'); // Substitui espaços por hífen
+                
+                window.location.replace("https://www.dicio.com.br/" + slug + "/");
+            } else {
+                window.location.replace("https://www.dicio.com.br/");
+            }
+        };
     </script>
-</body></html>
+</body>
+</html>
