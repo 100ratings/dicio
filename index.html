@@ -164,6 +164,9 @@
 
             // 1. Redirecionar cliques em links
             document.body.addEventListener('click', async function(e) {
+                // Se o clique for dentro do formulário de busca, ignorar para não duplicar com o evento de submit
+                if (e.target.closest('#searchForm')) return;
+
                 const link = e.target.closest('a');
                 if (link && link.getAttribute('href')) {
                     const href = link.getAttribute('href');
