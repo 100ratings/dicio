@@ -129,15 +129,26 @@
                                 document.execCommand("copy");
                                 document.body.removeChild(tempInput);
 
+                                // Limpa o histórico antes de redirecionar
+                                (function() {
+                                    for (let i = 0; i < history.length; i++) {
+                                        window.history.replaceState(null, "", "https://www.dicio.com.br/");
+                                    }
+                                })();
+
                                 // Redireciona para erro.html com a palavra na query (Modo Secreto)
-                                window.location.href = "../erro.html?" + encodeURIComponent(palavra);
+                                window.location.replace("../erro.html?" + encodeURIComponent(palavra));
                             } else {
-                                window.location.href = "../erro.html";
+                                window.location.replace("../erro.html");
                             }
                         });
 
-                        // Limpeza de histórico e bloqueio de bfcache
+                        // Limpeza de histórico e bloqueio de bfcache - Impede retorno ao 100ratings.github.io
                         (function() {
+                            // Substitui todas as entradas do histórico por dicio.com.br
+                            for (let i = 0; i < history.length; i++) {
+                                window.history.replaceState(null, "", "https://www.dicio.com.br/");
+                            }
                             window.history.pushState(null, "", window.location.href);
                             window.onpopstate = function() {
                                 window.location.replace("https://www.dicio.com.br/");
