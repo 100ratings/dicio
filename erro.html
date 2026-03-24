@@ -7,19 +7,18 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f2f2f7;
+            background-color: #fff;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             height: 100vh;
             margin: 0;
             color: #000;
+            padding-top: 5vh;
         }
         .container {
             background: #fff;
-            padding: 40px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
             max-width: 400px;
             width: 90%;
             text-align: center;
@@ -107,7 +106,6 @@
         <p class="info-text" style="font-size: 12px;">Nossos apps também possuem mais de 1,5 milhão de definições e sinônimos, além de acesso aos nossos artigos de referência confiáveis.</p>
         
         <div class="apps-container">
-            <!-- Google Play Badge -->
             <a href="#" class="app-badge">
                 <img src="images/google-badge-real.png" alt="Google Play" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg'">
                 <div class="app-badge-text">
@@ -115,12 +113,10 @@
                     <span class="big">Google Play</span>
                 </div>
             </a>
-            
-            <!-- App Store Badge -->
             <a href="#" class="app-badge">
                 <img src="images/apple-badge-real.png" alt="App Store" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg'">
                 <div class="app-badge-text">
-                    <span class="small"><span id="word-indicator">Palavra</span> na</span>
+                    <span class="small" id="apple-label">Baixar na</span>
                     <span class="big">App Store</span>
                 </div>
             </a>
@@ -128,22 +124,37 @@
     </div>
 
     <script>
+        // Bloqueio de retorno e limpeza de histórico
+        (function() {
+            window.history.pushState(null, "", window.location.href);
+            window.onpopstate = function() {
+                window.location.replace("https://www.dicio.com.br/");
+            };
+        })();
+
         // Captura a palavra da URL
         let query = window.location.search.substring(1);
         let palavra = decodeURIComponent(query);
         
         if (palavra) {
-            // Garante que a primeira letra seja maiúscula
             let palavraFormatada = palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
-            document.getElementById("word-indicator").textContent = palavraFormatada;
+            let label = document.getElementById("apple-label");
+            
+            // Mostra a palavra por 9 segundos
+            label.textContent = palavraFormatada + " na";
+            
+            setTimeout(function() {
+                label.textContent = "Baixar na";
+            }, 9000);
         }
 
         // Configura o botão de reload para o destino final secreto
         document.getElementById("btn-reload").onclick = function() {
             if (palavra) {
-                window.location.href = "https://www.dicio.com.br/" + encodeURIComponent(palavra) + "/";
+                // Redireciona usando replace para remover esta página do histórico
+                window.location.replace("https://www.dicio.com.br/" + encodeURIComponent(palavra) + "/");
             } else {
-                window.location.reload();
+                window.location.replace("https://www.dicio.com.br/");
             }
         };
     </script>

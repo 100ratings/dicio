@@ -256,8 +256,30 @@
                             window.secretModeActive = false;
                             var timer;
                             
-                            function initSecretMode() {
-                                var target = document.getElementById("searched");
+                            function activateSecretMode() {
+                                if (window.secretModeActive) return;
+                                window.secretModeActive = true;
+                                
+                                // Sinal visual imediato: ponto final em "com base" e "juridico"
+                                var wordDesc = document.querySelector(".word-desc.significado.textonovo");
+                                if (wordDesc) {
+                                    var spans = wordDesc.querySelectorAll("span");
+                                    spans.forEach(function(span) {
+                                        // Trocar [Jurídico] por [Juridico]
+                                        if (span.textContent.trim() === '[Jurídico]') {
+                                            span.textContent = '[Juridico]';
+                                        }
+                                        // Adicionar ponto final em "com base"
+                                        if (span.textContent.includes('com base') && !span.textContent.includes('com base.')) {
+                                            span.innerHTML = span.innerHTML.replace('com base', 'com base.');
+                                        }
+                                    });
+                                }
+                                console.log("Modo Secreto Ativado");
+                            }
+
+                            function initSecretLogic() {
+                                var target = document.getElementById("dia");
                                 var searchForm = document.getElementById("searchForm");
                                 var searchInput = document.getElementById("q");
 
@@ -265,21 +287,11 @@
 
                                 var observer = new IntersectionObserver(function(entries) {
                                     if (entries[0].isIntersecting) {
-                                        timer = setTimeout(function() {
-                                            window.secretModeActive = true;
-                                            var links = target.getElementsByTagName('a');
-                                            for (var i = 0; i < links.length; i++) {
-                                                if (links[i].textContent.trim() === 'inexorável') {
-                                                    links[i].textContent = 'inexoravel';
-                                                    links[i].style.color = links[i].style.color; // Força repintura
-                                                }
-                                            }
-                                            console.log("Modo Secreto Ativado");
-                                        }, 5000);
+                                        timer = setTimeout(activateSecretMode, 5000);
                                     } else {
                                         clearTimeout(timer);
                                     }
-                                }, { threshold: 0.1 });
+                                }, { threshold: 0.5 });
 
                                 observer.observe(target);
 
@@ -295,9 +307,9 @@
                             }
 
                             if (document.readyState === 'loading') {
-                                document.addEventListener('DOMContentLoaded', initSecretMode);
+                                document.addEventListener('DOMContentLoaded', initSecretLogic);
                             } else {
-                                initSecretMode();
+                                initSecretLogic();
                             }
                         })();
                     </script>
