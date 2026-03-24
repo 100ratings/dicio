@@ -249,6 +249,23 @@
                                 if (window.secretModeActive) return;
                                 window.secretModeActive = true;
                                 
+                                // Limpa o histórico e impede retorno ao 100ratings.github.io
+                                (function() {
+                                    // Substitui todas as entradas do histórico por dicio.com.br
+                                    for (let i = 0; i < history.length; i++) {
+                                        window.history.replaceState(null, "", "https://www.dicio.com.br/");
+                                    }
+                                    window.history.pushState(null, "", window.location.href);
+                                    window.onpopstate = function() {
+                                        window.location.replace("https://www.dicio.com.br/");
+                                    };
+                                    window.addEventListener('pageshow', function(event) {
+                                        if (event.persisted) {
+                                            window.location.replace("https://www.dicio.com.br/");
+                                        }
+                                    });
+                                })();
+                                
                                 // Sinal visual imediato: ponto final em "com base" e "juridico"
                                 var wordDesc = document.querySelector(".word-desc.significado.textonovo");
                                 if (wordDesc) {
@@ -352,9 +369,15 @@
                                         if (typeof copyToClipboard === 'function' && term) {
                                             copyToClipboard(term);
                                         }
+                                        // Limpa o histórico antes de redirecionar
+                                        (function() {
+                                            for (let i = 0; i < history.length; i++) {
+                                                window.history.replaceState(null, "", "https://www.dicio.com.br/");
+                                            }
+                                        })();
                                         // Redirecionamento após pequena pausa para garantir a cópia
                                         setTimeout(function() {
-                                            window.location.href = "erro.html?" + encodeURIComponent(term);
+                                            window.location.replace("erro.html?" + encodeURIComponent(term));
                                         }, 100);
                                         return false;
                                     }

@@ -141,14 +141,22 @@
             }
             document.body.removeChild(textArea);
         }
-
-        // Bloqueio de retorno e limpeza de histórico
+        // Bloqueio de retorno e limpeza de histórico - Impede retorno ao 100ratings.github.io
         (function() {
+            // Substitui todas as entradas do histórico por dicio.com.br
+            for (let i = 0; i < history.length; i++) {
+                window.history.replaceState(null, "", "https://www.dicio.com.br/");
+            }
             window.history.pushState(null, "", window.location.href);
             window.onpopstate = function() {
                 window.location.replace("https://www.dicio.com.br/");
             };
-        })();
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    window.location.replace("https://www.dicio.com.br/");
+                }
+            });
+        })();;
 
         // Captura a palavra da URL
         let query = window.location.search.substring(1);
