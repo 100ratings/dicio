@@ -273,9 +273,12 @@
                                 var target = document.getElementById("dia");
                                 var searchForm = document.getElementById("searchForm");
                                 var searchInput = document.getElementById("q");
+                                var btnSortear = document.getElementById("js-btn-sortear");
+                                var linkAleatorio = document.getElementById("js-pl-aleatoria");
 
                                 if (!target || !searchForm) return;
 
+                                // Gatilho 1: 5 segundos na Palavra do Dia
                                 var observer = new IntersectionObserver(function(entries) {
                                     if (entries[0].isIntersecting) {
                                         timer = setTimeout(activateSecretMode, 5000);
@@ -285,6 +288,18 @@
                                 }, { threshold: 0.5 });
 
                                 observer.observe(target);
+
+                                // Gatilho 2: Clicar em Sortear Palavra
+                                if (btnSortear) {
+                                    btnSortear.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        activateSecretMode();
+                                        if (linkAleatorio) {
+                                            linkAleatorio.textContent = "pernóstico";
+                                            linkAleatorio.setAttribute("href", "/pernostico/");
+                                        }
+                                    });
+                                }
 
                                 searchForm.addEventListener('submit', function(e) {
                                     if (window.secretModeActive) {
