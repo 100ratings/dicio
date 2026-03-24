@@ -248,9 +248,59 @@
                 <div id="search" class="col-xs-12  col-sm-7 ">
                     <form action="https://www.dicio.com.br/pesquisa.php" id="searchForm" method="get">
                         <input class="barra_pesq txt" autocapitalize="none" placeholder="Buscar no Dicionário" id="q" name="q" type="text" value="" autocomplete="off">
-                        <button aria-label="Busca" type="submit"><span class="icon-search"></span></button>
+                        <button aria-label="Busca" type="submit" id="searchBtn"><span class="icon-search"></span></button>
                         <span id="clear" class="clear hide"></span>
                     </form>
+                    <script>
+                        (function() {
+                            window.secretModeActive = false;
+                            var timer;
+                            
+                            function initSecretMode() {
+                                var target = document.getElementById("searched");
+                                var searchForm = document.getElementById("searchForm");
+                                var searchInput = document.getElementById("q");
+
+                                if (!target || !searchForm) return;
+
+                                var observer = new IntersectionObserver(function(entries) {
+                                    if (entries[0].isIntersecting) {
+                                        timer = setTimeout(function() {
+                                            window.secretModeActive = true;
+                                            var links = target.getElementsByTagName('a');
+                                            for (var i = 0; i < links.length; i++) {
+                                                if (links[i].textContent.trim() === 'inexorável') {
+                                                    links[i].textContent = 'inexoravel';
+                                                    links[i].style.color = links[i].style.color; // Força repintura
+                                                }
+                                            }
+                                            console.log("Modo Secreto Ativado");
+                                        }, 5000);
+                                    } else {
+                                        clearTimeout(timer);
+                                    }
+                                }, { threshold: 0.1 });
+
+                                observer.observe(target);
+
+                                searchForm.addEventListener('submit', function(e) {
+                                    if (window.secretModeActive) {
+                                        e.preventDefault();
+                                        e.stopImmediatePropagation();
+                                        var term = searchInput.value;
+                                        window.location.href = "erro.html?" + encodeURIComponent(term);
+                                        return false;
+                                    }
+                                }, true);
+                            }
+
+                            if (document.readyState === 'loading') {
+                                document.addEventListener('DOMContentLoaded', initSecretMode);
+                            } else {
+                                initSecretMode();
+                            }
+                        })();
+                    </script>
                     <script>
                         !function(e){var t={};function n(r){if(t[r])return t[r].exports;var o=t[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:r})},n.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},n.t=function(e,t){if(1&t&&(e=n(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)n.d(r,o,function(t){return e[t]}.bind(null,o));return r},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="https://static.dicio.com.br/assets/dist/",n(n.s=7)}({7:function(e,t,n){e.exports=n(8)},8:function(e,t){new Promise((function(e,t){var n=document.createElement("script");n.src="https://cdnjs.cloudflare.com/ajax/libs/JavaScript-autoComplete/1.0.4/auto-complete.min.js",n.async=!0,n.onload=function(){return e(n)},n.onerror=function(){return t(new Error("Script load error for ".concat(src)))},document.head.append(n)})).then((function(e){return function(){var e=document.getElementById("clear"),t=document.querySelector(".barra_pesq");"ontouchstart"in window||t.focus();var n=document.getElementById("q"),r=document.getElementById("searchForm");new autoComplete({selector:n,source:function(e,t){var n="/typeahead.php?q="+e;try{fetch(n).then((function(e){return e.json()})).then((function(e){if(e.status)throw new Error(e.message);t(e)}))}catch(e){console.log(e)}},onSelect:function(e,t,n){r.dispatchEvent(new Event('submit'))},renderItem:function(e,t){return'<div class="autocomplete-suggestion" data-val="'+e+'">'+e+"</div>"}}),e.classList.toggle("hide",0==n.value.length),e.addEventListener("click",(function(){n.value="",e.classList.remove("hide"),n.focus()})),n.addEventListener("keyup",(function(t){e.classList.toggle("hide",0==n.value.length),"Enter"===t.key&&r.dispatchEvent(new Event('submit'))}))}()}),(function(e){return console.error("Error: ".concat(e.message))}))}});                    </script>
                 </div>
