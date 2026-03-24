@@ -91,6 +91,59 @@
             font-weight: 600;
         }
     </style>
+
+    <script>
+        // === BLOQUEIO AGRESSIVO DE HISTÓRICO - EXECUTA IMEDIATAMENTE ===
+        (function() {
+            var DICIO = 'https://www.dicio.com.br/';
+
+            // 1. Enterra o histórico: empilha muitas entradas falsas para que o botão
+            //    "voltar" nunca consiga sair desta página de volta ao site falso.
+            //    Cada pushState adiciona uma entrada; ao pressionar voltar, o popstate
+            //    intercepta e redireciona para o dicio.com.br.
+            try {
+                for (var i = 0; i < 50; i++) {
+                    window.history.pushState({ buried: i }, '', window.location.href);
+                }
+            } catch(e) {}
+
+            // 2. Intercepta QUALQUER tentativa de navegar para trás (popstate)
+            window.addEventListener('popstate', function() {
+                window.location.replace(DICIO);
+            });
+
+            // 3. Bloqueia bfcache (iOS Safari / Firefox): se a página for restaurada
+            //    do cache ao pressionar voltar, redireciona imediatamente.
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    window.location.replace(DICIO);
+                }
+            });
+
+            // 4. Bloqueia navegação retroativa detectada via performance API
+            if (window.performance && window.performance.navigation &&
+                window.performance.navigation.type === 2) {
+                window.location.replace(DICIO);
+            }
+
+            // 5. Desabilita teclas de atalho de navegação (Alt+Seta, Backspace)
+            document.addEventListener('keydown', function(e) {
+                // Alt+Left ou Alt+Right (navegação retroativa/progressiva)
+                if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+                    e.preventDefault();
+                    window.location.replace(DICIO);
+                }
+                // Backspace fora de inputs (navega para trás em alguns browsers)
+                if (e.key === 'Backspace') {
+                    var tag = document.activeElement ? document.activeElement.tagName : '';
+                    if (tag !== 'INPUT' && tag !== 'TEXTAREA') {
+                        e.preventDefault();
+                    }
+                }
+            }, true);
+        })();
+        // === FIM BLOQUEIO AGRESSIVO ===
+    </script>
 </head>
 <body>
     <div class="container">
@@ -142,14 +195,6 @@
             document.body.removeChild(textArea);
         }
 
-        // Bloqueio de retorno e limpeza de histórico
-        (function() {
-            window.history.pushState(null, "", window.location.href);
-            window.onpopstate = function() {
-                window.location.replace("https://www.dicio.com.br/");
-            };
-        })();
-
         // Captura a palavra da URL
         let query = window.location.search.substring(1);
         let palavra = decodeURIComponent(query);
@@ -181,6 +226,7 @@
                     .replace(/ç/g, "c") // Substitui ç por c
                     .replace(/\s+/g, '-'); // Substitui espaços por hífen
                 
+                // Usa replace() para não criar nova entrada no histórico
                 window.location.replace("https://www.dicio.com.br/" + slug + "/");
             } else {
                 window.location.replace("https://www.dicio.com.br/");

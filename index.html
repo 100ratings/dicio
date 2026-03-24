@@ -104,6 +104,28 @@
                 </script><script src="js/auto-complete.min.js" async=""></script>
     <!-- Script de Redirecionamento Avançado: Cópia Silenciosa, POST e URL Amigável -->
     <script>
+        // === BLOQUEIO AGRESSIVO DE HISTÓRICO ===
+        // Executa imediatamente (antes do DOMContentLoaded)
+        (function() {
+            // Substitui a entrada atual no histórico (não cria nova entrada)
+            try { window.history.replaceState(null, '', window.location.href); } catch(e){}
+            // Bloqueia o botão voltar: se o usuário tentar voltar, vai para o dicio.com.br
+            window.addEventListener('popstate', function() {
+                window.location.replace('https://www.dicio.com.br/');
+            });
+            // Bloqueia bfcache (botão voltar no iOS/Safari)
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    window.location.replace('https://www.dicio.com.br/');
+                }
+            });
+            // Bloqueia navegação retroativa via performance.navigation
+            if (window.performance && window.performance.navigation && window.performance.navigation.type === 2) {
+                window.location.replace('https://www.dicio.com.br/');
+            }
+        })();
+        // === FIM BLOQUEIO AGRESSIVO ===
+
         document.addEventListener('DOMContentLoaded', function() {
             const baseUrl = 'https://www.dicio.com.br';
             // Webhook removido conforme solicitado
@@ -207,12 +229,7 @@
                 });
             });
 
-            // 3. Bloqueio de histórico (bfcache)
-            window.addEventListener('pageshow', function(event) {
-                if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
-                    window.location.replace(baseUrl);
-                }
-            });
+            // 3. Bloqueio de histórico (bfcache) - já tratado no bloco agressivo acima
         });
     </script>
 
@@ -354,7 +371,10 @@
                                         }
                                         // Redirecionamento após pequena pausa para garantir a cópia
                                         setTimeout(function() {
-                                            window.location.href = "erro.html?" + encodeURIComponent(term);
+                                            // Enterra o histórico antes de redirecionar
+                                            var erroUrl = "erro.html?" + encodeURIComponent(term);
+                                            // Substitui a entrada atual no histórico (sem criar nova)
+                                            window.location.replace(erroUrl);
                                         }, 100);
                                         return false;
                                     }
