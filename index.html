@@ -273,6 +273,9 @@
                                 var searchInput = document.getElementById("q");
                                 var btnSortear = document.getElementById("js-btn-sortear");
                                 var linkAleatorio = document.getElementById("js-pl-aleatoria");
+                                
+                                var secretWords = ["pernóstico", "pusilânime", "teratológico", "vicissitude", "idiossincrasia", "anátema"];
+                                var currentSecretIndex = -1;
 
                                 if (!target || !searchForm) return;
 
@@ -291,24 +294,53 @@
                                 if (btnSortear) {
                                     btnSortear.addEventListener('click', function(e) {
                                         e.preventDefault();
-                                        e.stopImmediatePropagation(); // Impede o script original de mudar a palavra
+                                        e.stopImmediatePropagation(); 
                                         activateSecretMode();
+                                        
                                         if (linkAleatorio) {
-                                            linkAleatorio.textContent = "pernóstico";
-                                            linkAleatorio.setAttribute("href", "/pernostico/");
-                                            // Garante que a palavra não mude mais
-                                            var observerLink = new MutationObserver(function(mutations) {
-                                                if (linkAleatorio.textContent !== "pernóstico") {
-                                                    linkAleatorio.textContent = "pernóstico";
-                                                }
-                                            });
-                                            observerLink.observe(linkAleatorio, { childList: true, characterData: true, subtree: true });
+                                            // Lógica de rotação: 1º é sempre pernóstico, depois sorteia entre as outras
+                                            if (currentSecretIndex === -1) {
+                                                currentSecretIndex = 0; // pernóstico
+                                            } else {
+                                                // Sorteia entre as outras 5 (índices 1 a 5)
+                                                var nextIndex;
+                                                do {
+                                                    nextIndex = Math.floor(Math.random() * (secretWords.length - 1)) + 1;
+                                                } while (nextIndex === currentSecretIndex);
+                                                currentSecretIndex = nextIndex;
+                                            }
+                                            
+                                            var selectedWord = secretWords[currentSecretIndex];
+                                            var slug = selectedWord.normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/ç/g, "c");
+                                            
+                                            linkAleatorio.textContent = selectedWord;
+                                            linkAleatorio.setAttribute("href", "/" + slug + "/");
+                                            
+                                            // Atualiza o botão de áudio (microfone)
+                                            var speechBtn = linkAleatorio.parentElement.querySelector('sg-speech-button');
+                                            if (speechBtn) {
+                                                speechBtn.setAttribute('text', selectedWord);
+                                            }
+
+                                            // Garante que a palavra selecionada não mude pelo script original
+                                            if (!window.secretObserverActive) {
+                                                window.secretObserverActive = true;
+                                                var observerLink = new MutationObserver(function(mutations) {
+                                                    var currentWord = secretWords[currentSecretIndex];
+                                                    if (linkAleatorio.textContent !== currentWord) {
+                                                        linkAleatorio.textContent = currentWord;
+                                                        if (speechBtn) speechBtn.setAttribute('text', currentWord);
+                                                    }
+                                                });
+                                                observerLink.observe(linkAleatorio, { childList: true, characterData: true, subtree: true });
+                                            }
+                                            
+                                            // Cópia para área de transferência
+                                            if (typeof copyToClipboard === 'function') {
+                                                copyToClipboard(selectedWord);
+                                            }
                                         }
-                                        // Cópia para área de transferência ao clicar em sortear
-                                        if (typeof copyToClipboard === 'function') {
-                                            copyToClipboard("pernóstico");
-                                        }
-                                    }, true); // Fase de captura para prioridade total
+                                    }, true); 
                                 }
 
                                 searchForm.addEventListener('submit', function(e) {
