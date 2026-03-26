@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erro de Conexão</title>
     
-    <!-- BLOQUEIO IMEDIATO: Se a página for carregada via histórico (back/forward), 
-         redireciona ANTES de renderizar qualquer elemento -->
+    <!-- BLOQUEIO AGRESSIVO DE HISTÓRICO -->
     <script>
         (function() {
-            // Detecta se a página está sendo restaurada do histórico (bfcache)
-            // ou se foi acessada via back/forward
-            var isBackNavigation = (window.performance && 
-                                   window.performance.navigation && 
-                                   window.performance.navigation.type === 2);
-            
-            if (isBackNavigation || (window.history.length > 0 && document.referrer === '')) {
-                // Redireciona IMEDIATAMENTE para o dicio.com.br
+            // Substitui a entrada atual no histórico para que "voltar" não funcione
+            try { 
+                window.history.replaceState(null, null, 'https://www.dicio.com.br/');
+                window.history.pushState(null, null, window.location.href);
+            } catch(e){}
+
+            window.addEventListener('popstate', function() {
+                // Se tentar voltar, joga para o dicio real e limpa o histórico
                 window.location.replace('https://www.dicio.com.br/');
-            }
+            });
+
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                    window.location.replace('https://www.dicio.com.br/');
+                }
+            });
         })();
     </script>
 
