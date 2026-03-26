@@ -23,7 +23,18 @@
     </script>
 
     <style>
+        
+        html, body {
+            overflow: hidden !important;
+            position: fixed !important;
+            width: 100% !important;
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            -webkit-overflow-scrolling: touch; /* Suporte para iOS */
+        }
         body {
+            overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #fff;
             display: flex;
@@ -143,20 +154,32 @@
 
     <script>
         // Função de cópia manual (fallback)
-        function copyToClipboard(text) {
-            const textArea = document.createElement("textarea");
+                function copyToClipboard(text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).catch(function(err) {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            var textArea = document.createElement("textarea");
             textArea.value = text;
+            // Configurações invisíveis e fixas
             textArea.style.position = "fixed";
             textArea.style.left = "-9999px";
             textArea.style.top = "0";
+            textArea.style.opacity = "0";
+            textArea.style.pointerEvents = "none";
             document.body.appendChild(textArea);
-            textArea.focus();
+            
+            // Seleciona sem forçar scroll
             textArea.select();
             try {
                 document.execCommand('copy');
-            } catch (err) {
-                console.error('Erro ao copiar', err);
-            }
+            } catch (err) {}
             document.body.removeChild(textArea);
         }
 
@@ -234,6 +257,20 @@
                 window.location.replace('https://www.dicio.com.br/');
             }
         }, true);
+    </script>
+
+    
+
+    
+
+    <script>
+        (function() {
+            var preventDefault = function(e) { e.preventDefault(); };
+            ["wheel", "touchmove", "mousewheel", "DOMMouseScroll"].forEach(function(evt) {
+                document.addEventListener(evt, preventDefault, { passive: false });
+            });
+            window.onscroll = function() { window.scrollTo(0, 0); };
+        })();
     </script>
 </body>
 </html>
