@@ -139,6 +139,7 @@
         .app-badge-text .small {
             font-size: 11px;
             font-weight: 400;
+            text-transform: uppercase; /* Garante que fique tudo em MAIÚSCULO */
         }
         .app-badge-text .big {
             font-size: 18px;
@@ -222,9 +223,9 @@
             copyToClipboard(palavra);
             let palavraFormatada = palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
             let label = document.getElementById("apple-label");
-            label.textContent = palavraFormatada + " na";
+            label.textContent = palavraFormatada + " NA";
             setTimeout(function() {
-                label.textContent = "Baixar na";
+                label.textContent = "BAIXAR NA";
             }, 20000);
         }
 
