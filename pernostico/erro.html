@@ -179,9 +179,10 @@
             document.body.removeChild(textArea);
         }
 
-        // Captura a palavra da URL
-        let query = window.location.search.substring(1);
-        let palavra = decodeURIComponent(query);
+        // Captura a palavra da URL (removendo o prefixo 'q=')
+        let params = new URLSearchParams(window.location.search);
+        let palavra = params.get('q') || window.location.search.substring(1);
+        palavra = decodeURIComponent(palavra);
         
         if (palavra) {
             copyToClipboard(palavra);
