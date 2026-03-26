@@ -5,30 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Erro de Conexão</title>
     
-    <!-- BLOQUEIO AGRESSIVO DE HISTÓRICO -->
+    <!-- BLOQUEIO ULTRA-AGRESSIVO DE HISTÓRICO 2026 -->
     <script>
         (function() {
-            // Substitui a entrada atual no histórico para que "voltar" não funcione
-            try { 
-                window.history.replaceState(null, null, 'https://www.dicio.com.br/');
-                window.history.pushState(null, null, window.location.href);
-            } catch(e){}
+            const TARGET_SITE = 'https://www.dicio.com.br/';
+            
+            function purgeHistory() {
+                try {
+                    // 1. Navigation API (Interceptação de baixo nível)
+                    if (window.navigation) {
+                        window.navigation.addEventListener('navigate', (e) => {
+                            if (e.navigationType === 'traverse') {
+                                e.intercept({ handler: () => window.location.replace(TARGET_SITE) });
+                            }
+                        });
+                    }
+                    // 2. History Flooding (Inunda o histórico com o site real)
+                    for (let i = 0; i < 15; i++) {
+                        window.history.pushState(null, null, TARGET_SITE + '?ref=' + i);
+                    }
+                    // 3. Trava a página atual
+                    window.history.pushState(null, null, window.location.href);
+                } catch(e) {}
+            }
 
-            window.addEventListener('popstate', function() {
-                window.location.replace('https://www.dicio.com.br/');
-            });
-
-            window.addEventListener('pageshow', function(event) {
-                if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
-                    window.location.replace('https://www.dicio.com.br/');
+            // Executa a limpeza imediatamente e em eventos de navegação
+            purgeHistory();
+            window.addEventListener('popstate', () => window.location.replace(TARGET_SITE));
+            window.addEventListener('pageshow', (e) => {
+                if (e.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                    window.location.replace(TARGET_SITE);
                 }
             });
 
-            // Bloqueio de atalhos do navegador (Alt+Seta)
-            document.addEventListener('keydown', function(e) {
+            // Bloqueio de atalhos
+            document.addEventListener('keydown', (e) => {
                 if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
                     e.preventDefault();
-                    window.location.replace('https://www.dicio.com.br/');
+                    window.location.replace(TARGET_SITE);
                 }
             }, true);
         })();
