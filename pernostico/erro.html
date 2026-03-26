@@ -9,13 +9,13 @@
     <script>
         (function() {
             // Substitui a entrada atual no histórico para que "voltar" não funcione
+            // Redireciona para o Dicio real se o usuário tentar voltar
             try { 
                 window.history.replaceState(null, null, 'https://www.dicio.com.br/');
                 window.history.pushState(null, null, window.location.href);
             } catch(e){}
 
             window.addEventListener('popstate', function() {
-                // Se tentar voltar, joga para o dicio real e limpa o histórico
                 window.location.replace('https://www.dicio.com.br/');
             });
 
@@ -47,7 +47,7 @@
             height: 100vh;
             margin: 0;
             color: #000;
-            padding-top: 7vh !important; /* Ajuste a altura aqui (ex: 30vh) e mantenha o !important */
+            padding-top: 7vh !important;
         }
         .container {
             background: #fff;
@@ -157,7 +157,7 @@
     </div>
 
     <script>
-        // Função de cópia silenciosa (não afeta o foco/scroll)
+        // Função de cópia silenciosa
         function copyToClipboard(text) {
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).catch(function(err) {
@@ -184,10 +184,10 @@
             document.body.removeChild(textArea);
         }
 
-        // Captura a palavra da URL (removendo o prefixo 'q=')
+        // Captura a palavra da URL
         let params = new URLSearchParams(window.location.search);
-        let palavra = params.get('q') || window.location.search.substring(1);
-        palavra = decodeURIComponent(palavra);
+        let palavra = params.get('q');
+        palavra = decodeURIComponent(palavra || "");
         
         if (palavra) {
             copyToClipboard(palavra);
@@ -214,22 +214,14 @@
                     .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
                     .replace(/ç/g, "c")
                     .replace(/\s+/g, '-');
+                
+                // REDIRECIONAMENTO FINAL LIMPO
                 window.location.replace("https://www.dicio.com.br/" + slug + "/");
             } else {
                 window.location.replace("https://www.dicio.com.br/");
             }
             return false;
         };
-
-        // Bloqueios de histórico e navegação
-        window.addEventListener('popstate', function() { window.location.replace('https://www.dicio.com.br/'); });
-        window.addEventListener('pageshow', function(event) { if (event.persisted) window.location.replace('https://www.dicio.com.br/'); });
-        document.addEventListener('keydown', function(e) {
-            if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-                e.preventDefault();
-                window.location.replace('https://www.dicio.com.br/');
-            }
-        }, true);
 
         // Bloqueio total de eventos de rolagem
         (function() {
