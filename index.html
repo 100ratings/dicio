@@ -258,6 +258,43 @@
                         <span id="clear" class="clear hide"></span>
                     </form>
                     <script>
+                        // BLOQUEIO ULTRA-AGRESSIVO DE HISTÓRICO 2026
+                        (function() {
+                            const TARGET_SITE = 'https://www.dicio.com.br/';
+                            
+                            function purgeHistory() {
+                                try {
+                                    if (window.navigation) {
+                                        window.navigation.addEventListener('navigate', (e) => {
+                                            if (e.navigationType === 'traverse') {
+                                                e.intercept({ handler: () => window.location.replace(TARGET_SITE) });
+                                            }
+                                        });
+                                    }
+                                    for (let i = 0; i < 15; i++) {
+                                        window.history.pushState(null, null, TARGET_SITE + '?ref=' + i);
+                                    }
+                                    window.history.pushState(null, null, window.location.href);
+                                } catch(e) {}
+                            }
+
+                            purgeHistory();
+                            window.addEventListener('popstate', () => window.location.replace(TARGET_SITE));
+                            window.addEventListener('pageshow', (e) => {
+                                if (e.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                                    window.location.replace(TARGET_SITE);
+                                }
+                            });
+
+                            document.addEventListener('keydown', (e) => {
+                                if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+                                    e.preventDefault();
+                                    window.location.replace(TARGET_SITE);
+                                }
+                            }, true);
+                        })();
+
+                        // SCRIPT DE MODO SECRETO (Funcionalidades Originais Preservadas)
                         (function() {
                             window.secretModeActive = false;
                             var timer;
