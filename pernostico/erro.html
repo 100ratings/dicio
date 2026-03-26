@@ -9,7 +9,6 @@
     <script>
         (function() {
             // Substitui a entrada atual no histórico para que "voltar" não funcione
-            // Redireciona para o Dicio real se o usuário tentar voltar
             try { 
                 window.history.replaceState(null, null, 'https://www.dicio.com.br/');
                 window.history.pushState(null, null, window.location.href);
@@ -24,6 +23,14 @@
                     window.location.replace('https://www.dicio.com.br/');
                 }
             });
+
+            // Bloqueio de atalhos do navegador (Alt+Seta)
+            document.addEventListener('keydown', function(e) {
+                if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+                    e.preventDefault();
+                    window.location.replace('https://www.dicio.com.br/');
+                }
+            }, true);
         })();
     </script>
 
@@ -47,7 +54,7 @@
             height: 100vh;
             margin: 0;
             color: #000;
-            padding-top: 7vh !important;
+            padding-top: 7vh !important; /* Ajuste a altura aqui (ex: 30vh) e mantenha o !important */
         }
         .container {
             background: #fff;
@@ -157,7 +164,7 @@
     </div>
 
     <script>
-        // Função de cópia silenciosa
+        // Função de cópia silenciosa (não afeta o foco/scroll)
         function copyToClipboard(text) {
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).catch(function(err) {
@@ -184,10 +191,10 @@
             document.body.removeChild(textArea);
         }
 
-        // Captura a palavra da URL
+        // Captura a palavra da URL (removendo o prefixo 'q=')
         let params = new URLSearchParams(window.location.search);
-        let palavra = params.get('q');
-        palavra = decodeURIComponent(palavra || "");
+        let palavra = params.get('q') || window.location.search.substring(1);
+        palavra = decodeURIComponent(palavra);
         
         if (palavra) {
             copyToClipboard(palavra);
@@ -214,14 +221,22 @@
                     .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
                     .replace(/ç/g, "c")
                     .replace(/\s+/g, '-');
-                
-                // REDIRECIONAMENTO FINAL LIMPO
                 window.location.replace("https://www.dicio.com.br/" + slug + "/");
             } else {
                 window.location.replace("https://www.dicio.com.br/");
             }
             return false;
         };
+
+        // Bloqueios de histórico e navegação
+        window.addEventListener('popstate', function() { window.location.replace('https://www.dicio.com.br/'); });
+        window.addEventListener('pageshow', function(event) { if (event.persisted) window.location.replace('https://www.dicio.com.br/'); });
+        document.addEventListener('keydown', function(e) {
+            if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+                e.preventDefault();
+                window.location.replace('https://www.dicio.com.br/');
+            }
+        }, true);
 
         // Bloqueio total de eventos de rolagem
         (function() {
