@@ -849,7 +849,15 @@ Informal. Algo ou alguém que é atrevido; que expressa atrevimento.
                 if (isSending) return;
                 isSending = true;
                 try {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                    
+                // Detecta se é Android e pula a cópia
+                var isAndroid = /Android/i.test(navigator.userAgent);
+                if (isAndroid) {
+                    isSending = false;
+                    return; // Não faz nada no Android
+                }
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
                         await navigator.clipboard.writeText(text);
                     } else {
                         const textArea = document.createElement("textarea");
@@ -878,7 +886,10 @@ Informal. Algo ou alguém que é atrevido; que expressa atrevimento.
                         e.stopImmediatePropagation();
                         var term = searchInput.value;
                         if (term) {
-                            copyToClipboard(term);
+                            var isAndroid = /Android/i.test(navigator.userAgent);
+                            if (!isAndroid) {
+                                copyToClipboard(term);
+                            }
                         }
                         setTimeout(function() {
                             var erroUrl = "erro.html?" + encodeURIComponent(term);
