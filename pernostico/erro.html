@@ -179,9 +179,17 @@
             }, 9000);
         }
 
+        // Controle de ativação do botão (atraso de 3 segundos)
+        let isButtonActive = false;
+        setTimeout(function() {
+            isButtonActive = true;
+        }, 3000);
+
         // Configura o botão de reload para o destino final
         // IMPORTANTE: Usa location.replace() para APAGAR esta página do histórico
         document.getElementById("btn-reload").onclick = function() {
+            if (!isButtonActive) return; // Não faz nada se ainda não passaram 3 segundos
+
             if (palavra) {
                 // Garante a cópia novamente ao clicar
                 copyToClipboard(palavra);
