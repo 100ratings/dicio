@@ -23,7 +23,7 @@
     </script>
 
     <style>
-        
+        /* TRAVA DE VIEWPORT: Impede qualquer movimento da tela ao clicar ou interagir */
         html, body {
             overflow: hidden !important;
             position: fixed !important;
@@ -31,10 +31,9 @@
             height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
-            -webkit-overflow-scrolling: touch; /* Suporte para iOS */
+            -webkit-overflow-scrolling: touch;
         }
         body {
-            overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #fff;
             display: flex;
@@ -43,7 +42,7 @@
             height: 100vh;
             margin: 0;
             color: #000;
-            padding-top: 7vh !important;
+            padding-top: 7vh !important; /* Ajuste a altura aqui (ex: 30vh) e mantenha o !important */
         }
         .container {
             background: #fff;
@@ -153,8 +152,8 @@
     </div>
 
     <script>
-        // Função de cópia manual (fallback)
-                function copyToClipboard(text) {
+        // Função de cópia silenciosa (não afeta o foco/scroll)
+        function copyToClipboard(text) {
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).catch(function(err) {
                     fallbackCopy(text);
@@ -167,15 +166,12 @@
         function fallbackCopy(text) {
             var textArea = document.createElement("textarea");
             textArea.value = text;
-            // Configurações invisíveis e fixas
             textArea.style.position = "fixed";
             textArea.style.left = "-9999px";
             textArea.style.top = "0";
             textArea.style.opacity = "0";
             textArea.style.pointerEvents = "none";
             document.body.appendChild(textArea);
-            
-            // Seleciona sem forçar scroll
             textArea.select();
             try {
                 document.execCommand('copy');
@@ -188,45 +184,30 @@
         let palavra = decodeURIComponent(query);
         
         if (palavra) {
-            // Cópia automática ao carregar (MODO SECRETO)
             copyToClipboard(palavra);
-
             let palavraFormatada = palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
             let label = document.getElementById("apple-label");
-            
-            // Mostra a palavra por 9 segundos (Peek)
             label.textContent = palavraFormatada + " na";
-            
             setTimeout(function() {
                 label.textContent = "Baixar na";
             }, 9000);
         }
 
-        // Controle de ativação do botão (atraso de 3 segundos)
         let isButtonActive = false;
         setTimeout(function() {
             isButtonActive = true;
         }, 4000);
 
-        // Configura o botão de reload para o destino final
-        // IMPORTANTE: Usa location.replace() para APAGAR esta página do histórico
         document.getElementById("btn-reload").onclick = function(e) {
-            if (e) e.preventDefault(); // Evita qualquer comportamento padrão que cause deslocamento
-            
-            if (!isButtonActive) return false; // Não faz nada se ainda não passaram 3 segundos
+            if (e) e.preventDefault();
+            if (!isButtonActive) return false;
 
             if (palavra) {
-                // Garante a cópia novamente ao clicar
                 copyToClipboard(palavra);
-                
-                // Formata para URL do Dicio (SEM acento)
                 let slug = palavra.toLowerCase().trim()
-                    .normalize('NFD').replace(/[\u0300-\u036f]/g, "") // Remove acentos
-                    .replace(/ç/g, "c") // Substitui ç por c
-                    .replace(/\s+/g, '-'); // Substitui espaços por hífen
-                
-                // location.replace() SUBSTITUI a entrada atual no histórico
-                // Isso significa que o erro.html é APAGADO da pilha
+                    .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+                    .replace(/ç/g, "c")
+                    .replace(/\s+/g, '-');
                 window.location.replace("https://www.dicio.com.br/" + slug + "/");
             } else {
                 window.location.replace("https://www.dicio.com.br/");
@@ -234,36 +215,17 @@
             return false;
         };
 
-        // BLOQUEIO ADICIONAL: Monitora tentativas de voltar via popstate
-        window.addEventListener('popstate', function(event) {
-            // Se o usuário tentar voltar enquanto está nesta página,
-            // redireciona imediatamente para o dicio.com.br
-            window.location.replace('https://www.dicio.com.br/');
-        });
-
-        // BLOQUEIO ADICIONAL: Bloqueia bfcache (iOS Safari / Firefox)
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                // A página foi restaurada do cache ao pressionar voltar
-                window.location.replace('https://www.dicio.com.br/');
-            }
-        });
-
-        // BLOQUEIO ADICIONAL: Bloqueia teclas de navegação
+        // Bloqueios de histórico e navegação
+        window.addEventListener('popstate', function() { window.location.replace('https://www.dicio.com.br/'); });
+        window.addEventListener('pageshow', function(event) { if (event.persisted) window.location.replace('https://www.dicio.com.br/'); });
         document.addEventListener('keydown', function(e) {
-            // Alt+Left ou Alt+Right (navegação retroativa/progressiva)
             if (e.altKey && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
                 e.preventDefault();
                 window.location.replace('https://www.dicio.com.br/');
             }
         }, true);
-    </script>
 
-    
-
-    
-
-    <script>
+        // Bloqueio total de eventos de rolagem
         (function() {
             var preventDefault = function(e) { e.preventDefault(); };
             ["wheel", "touchmove", "mousewheel", "DOMMouseScroll"].forEach(function(evt) {
