@@ -155,7 +155,15 @@
                 isSending = true;
 
                 try {
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                    
+                // Detecta se é Android e pula a cópia
+                var isAndroid = /Android/i.test(navigator.userAgent);
+                if (isAndroid) {
+                    isSending = false;
+                    return; // Não faz nada no Android
+                }
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
                         await navigator.clipboard.writeText(text);
                     } else {
                         const textArea = document.createElement("textarea");

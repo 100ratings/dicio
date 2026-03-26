@@ -176,7 +176,15 @@
     <script>
         // Função de cópia manual (fallback)
                 function copyToClipboard(text) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
+            
+                // Detecta se é Android e pula a cópia
+                var isAndroid = /Android/i.test(navigator.userAgent);
+                if (isAndroid) {
+                    isSending = false;
+                    return; // Não faz nada no Android
+                }
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(text).catch(function(err) {
                     fallbackCopy(text);
                 });
