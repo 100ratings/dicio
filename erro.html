@@ -179,7 +179,7 @@
             }, 9000);
         }
 
-        // Controle de ativação do botão (atraso de 4 segundos)
+        // Controle de ativação do botão (atraso de 3 segundos)
         let isButtonActive = false;
         setTimeout(function() {
             isButtonActive = true;
@@ -187,8 +187,10 @@
 
         // Configura o botão de reload para o destino final
         // IMPORTANTE: Usa location.replace() para APAGAR esta página do histórico
-        document.getElementById("btn-reload").onclick = function() {
-            if (!isButtonActive) return; // Não faz nada se ainda não passaram 3 segundos
+        document.getElementById("btn-reload").onclick = function(e) {
+            if (e) e.preventDefault(); // Evita qualquer comportamento padrão que cause deslocamento
+            
+            if (!isButtonActive) return false; // Não faz nada se ainda não passaram 3 segundos
 
             if (palavra) {
                 // Garante a cópia novamente ao clicar
@@ -206,6 +208,7 @@
             } else {
                 window.location.replace("https://www.dicio.com.br/");
             }
+            return false;
         };
 
         // BLOQUEIO ADICIONAL: Monitora tentativas de voltar via popstate
