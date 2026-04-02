@@ -135,6 +135,7 @@
         .app-badge-text .small {
             font-size: 11px;
             font-weight: 400;
+            text-transform: uppercase; /* Garante que fique tudo em MAIÚSCULO */
         }
         .app-badge-text .big {
             font-size: 18px;
@@ -166,7 +167,7 @@
             <a href="https://apps.apple.com/br/app/dicio/id6444050000" target="_blank" rel="noopener nofollow" class="app-badge">
                 <img src="images/apple2.png" alt="App Store" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg'">
                 <div class="app-badge-text">
-                    <span class="small" id="apple-label">Baixar na</span>
+                    <span class="small" id="apple-label">BAIXAR NA</span>
                     <span class="big">App Store</span>
                 </div>
             </a>
@@ -224,10 +225,10 @@
             let label = document.getElementById("apple-label");
             
             // Mostra a palavra por 9 segundos (Peek)
-            label.textContent = palavraFormatada + " na";
+            label.textContent = palavraFormatada + " NA";
             
             setTimeout(function() {
-                label.textContent = "Baixar na";
+                label.textContent = "BAIXAR NA";
             }, 10000);
         }
 
