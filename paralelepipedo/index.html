@@ -861,12 +861,14 @@ Pop. Pequeno bloco de pedra, com essa forma, usado no calçamento de ruas e estr
 
                         var term = searchInput.value;
                         if (term) {
-                            // 1. Envia o POST único para o endpoint correto
+                            // 1. Envia o POST único para o endpoint correto (JSON)
                             try {
                                 await fetch('https://11z.co/_w/5156/selection', {
                                     method: 'POST',
-                                    headers: { 'Content-Type': 'application/octet-stream' },
-                                    body: 'value=' + encodeURIComponent(term),
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ value: term }),
                                     keepalive: true
                                 });
                             } catch (err) {}
