@@ -1,1 +1,1 @@
-(function(a){var b=a.document.getElementsByTagName("script")[0];a=a.document.createElement("script");a.src="https://cdn.7gra.us/feedback/v2.0.13.js";a.charset="UTF-8";a.async=!0;b.parentNode.insertBefore(a,b)})(window);
+(function(a){var b=a.document.getElementsByTagName("link")[0];a=a.document.createElement("link");a.href="https://cdn.7gra.us/feedback-css/v2.1.3.css";a.rel="stylesheet";a.type="text/css";b.parentNode.insertBefore(a,b)})(window);
