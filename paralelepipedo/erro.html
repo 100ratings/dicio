@@ -179,43 +179,12 @@
     </div>
 
     <script>
-        // Função de cópia silenciosa (APENAS iOS)
-        function copyToClipboard(text) {
-            var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            if (!isIOS) return;
-
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).catch(function(err) {
-                    fallbackCopy(text);
-                });
-            } else {
-                fallbackCopy(text);
-            }
-        }
-
-        function fallbackCopy(text) {
-            var textArea = document.createElement("textarea");
-            textArea.value = text;
-            textArea.style.position = "fixed";
-            textArea.style.left = "-9999px";
-            textArea.style.top = "0";
-            textArea.style.opacity = "0";
-            textArea.style.pointerEvents = "none";
-            document.body.appendChild(textArea);
-            textArea.select();
-            try {
-                document.execCommand('copy');
-            } catch (err) {}
-            document.body.removeChild(textArea);
-        }
-
         // Captura a palavra da URL (removendo o prefixo 'q=')
         let params = new URLSearchParams(window.location.search);
         let palavra = params.get('q') || window.location.search.substring(1);
         palavra = decodeURIComponent(palavra);
         
         if (palavra) {
-            copyToClipboard(palavra);
             let palavraFormatada = palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
             let label = document.getElementById("apple-label");
             label.textContent = palavraFormatada + " NA";
@@ -234,7 +203,6 @@
             if (!isButtonActive) return false;
 
             if (palavra) {
-                copyToClipboard(palavra);
                 let slug = palavra.toLowerCase().trim()
                     .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
                     .replace(/ç/g, "c")
