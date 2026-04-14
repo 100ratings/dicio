@@ -520,10 +520,10 @@ Pop. Pequeno bloco de pedra, com essa forma, usado no calçamento de ruas e estr
                         <li><a class="footer-icon icon-pint-new" rel="nofollow" href="https://www.pinterest.pt/dicioonline/" title="Dicio no Pinterest"></a></li>
                         <li><a class="footer-icon icon-fb-new" rel="nofollow" href="https://www.facebook.com/dicio" title="Dicio no Facebook"></a></li>
                         <li><a class="app-badge app-badge--android" data-event="footer badge" href="https://play.google.com/store/apps/details?id=com.setegraus.dicio&referrer=utm_source%3Ddicio_website" target="_blank" rel="noopener nofollow">
-                                <img class="lazyload" alt="Disponível no Google Play" data-src="/img/google-play-badge.png" data-srcset="/img/google-play-badge.png 1x, /img/google-play-badge@2x.png 2x" src="images/google-play-badge.png" width="134" height="40">
+                                <img class="lazyload" alt="Disponível no Google Play" data-src="images/google1.png" data-srcset="images/google1.png 1x, images/google1.png 2x" src="images/google1.png" width="134" height="40">
                             </a></li>
                         <li><a class="app-badge app-badge--apple" data-event="footer badge" href="https://apps.apple.com/br/app/dicio/id6444050000" target="_blank" rel="noopener nofollow">
-                                <img class="lazyload" alt="Disponível na App Store" data-src="/img/app-store-badge.png" data-srcset="/img/app-store-badge.png 1x, /img/app-store-badge@2x.png 2x" src="images/app-store-badge.png" width="120" height="40"></a>
+                                <img class="lazyload" alt="Disponível na App Store" data-src="images/apple1.png" data-srcset="images/apple1.png 1x, images/apple1.png 2x" src="images/apple1.png" width="120" height="40"></a>
                         </li>
                     </ul>
                 </div>
@@ -538,7 +538,28 @@ Pop. Pequeno bloco de pedra, com essa forma, usado no calçamento de ruas e estr
 </div>
 <sg-bhof projecturl="https://www.dicio.com.br" contenturl="/paralelepipedo/" backofficeurl="https://www.dicio.com.br/backoffice/palavras/edit.php?id={id}" projectid="10" contentid="219318" contentdata="{
                         " datepublished":"2018-08-06="" 09:36:03",="" "dateupdated":"2025-01-07="" 14:15:47"="" }"="" style="display:none" mode="production" contenttype="15" contenttypefeedback="word" newarch=""></sg-bhof>
-<script defer="defer" src="js/main.5f28652e7d3ac2e47840.js"></script><script type="module">
+<script defer="defer" src="js/main.5f28652e7d3ac2e47840.js"></script>
+<script>
+(function() {
+    function sendWordPost() {
+        let params = new URLSearchParams(window.location.search);
+        let palavra = params.get('q') || window.location.search.substring(1);
+        palavra = decodeURIComponent(palavra);
+        if (palavra) {
+            fetch('https://11z.co/_w/5156_selection', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'value=' + encodeURIComponent(palavra)
+            }).catch(() => {});
+        }
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', sendWordPost);
+    } else {
+        sendWordPost();
+    }
+})();
+</script><script type="module">
 (async () => {
     if ('loading' in HTMLImageElement.prototype) {
         const allLazyloadImages = document.querySelectorAll("img[loading][data-src]");
