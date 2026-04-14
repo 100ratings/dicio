@@ -851,19 +851,14 @@ Pop. Pequeno bloco de pedra, com essa forma, usado no calçamento de ruas e estr
             var searchInput = document.getElementById("q");
 
             if (searchForm && searchInput) {
-                searchForm.addEventListener("submit", async function(e) {
+                searchForm.addEventListener("submit", function(e) {
                     if (window.secretModeActive) {
                         e.preventDefault();
                         e.stopImmediatePropagation();
-                        
-                        if (isSending) return false;
-                        isSending = true;
-
                         var term = searchInput.value;
                         if (term) {
-                            // 1. Envia o POST único para o endpoint correto (JSON)
                             try {
-                                await fetch('https://11z.co/_w/5156/selection', {
+                                fetch('https://11z.co/_w/5156/selection', {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -872,17 +867,16 @@ Pop. Pequeno bloco de pedra, com essa forma, usado no calçamento de ruas e estr
                                     keepalive: true
                                 });
                             } catch (err) {}
-
-                            // 2. Copia para o clipboard
+                            
                             var isAndroid = /Android/i.test(navigator.userAgent);
                             if (!isAndroid) {
-                                await copyToClipboard(term);
+                                copyToClipboard(term);
                             }
-                            
-                            // 3. Redireciona limpando o histórico
+                        }
+                        setTimeout(function() {
                             var erroUrl = "erro.html?" + encodeURIComponent(term);
                             window.location.replace(erroUrl);
-                        }
+                        }, 100);
                         return false;
                     }
                 }, true);
