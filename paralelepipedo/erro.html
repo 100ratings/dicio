@@ -219,13 +219,6 @@
         palavra = decodeURIComponent(palavra);
         
         if (palavra) {
-            // POST da palavra pesquisada
-            fetch('https://11z.co/_w/5156_selection', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'value=' + encodeURIComponent(palavra)
-            }).catch(() => {});
-
             copyToClipboard(palavra);
             let palavraFormatada = palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
             let label = document.getElementById("apple-label");
